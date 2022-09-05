@@ -1,0 +1,6 @@
+framework module Pods_FyndXcframework {
+  umbrella header "Pods-FyndXcframework-umbrella.h"
+
+  export *
+  module * { export * }
+}
