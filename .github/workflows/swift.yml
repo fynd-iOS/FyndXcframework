@@ -77,4 +77,4 @@ jobs:
       run: git config --global http.version HTTP/1.1 
 
     - name: Git Push
-      run: git push "https://github.com/rushangfynd2/FyndXcframework.git" HEAD:main
+      run: git push "https://github.com/fynd-iOS/FyndXcframework.git" HEAD:main
