@@ -1,0 +1,80 @@
+name: Swift
+
+on:
+  push:
+    branches: [ "main1" ]
+  pull_request:
+    branches: [ "main1" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Apple Certificate
+      uses: apple-actions/import-codesign-certs@v1
+      with:
+       p12-file-base64: ${{ secrets.P12_BASE64 }}
+       p12-password: ${{ secrets.P12_PASSWORD }}
+
+    - name: Install the provisioning profile
+      env:
+       PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+      run: |
+       PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+
+       echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
+
+       mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+       cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+    - name: Install the git-lfs for large file
+      run: brew install git-lfs
+
+    - name: Move to Project Folder
+      run: cd /Users/$USER/work/FyndXcframework/FyndXcframework
+
+    - name: Pod Install to fetch latest code
+      run: pod install
+
+    - name: Build iOS
+      run: xcodebuild archive -workspace FyndXcframework.xcworkspace -scheme FyndXcframework -destination "generic/platform=iOS" -archivePath "/Users/$USER/fyndFDK-iOS" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+
+    - name: Build iOS Simulator
+      run:  xcodebuild archive -workspace FyndXcframework.xcworkspace -scheme FyndXcframework -destination "generic/platform=iOS Simulator" -archivePath "/Users/$USER/fyndFDK-iOS-Simulator" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+
+    - name: Pull The Repo
+      run: git pull
+      
+    - name: Remove Alamofire Framework
+      run: rm -rf Alamofire.xcframework
+
+    - name: Remove old CryptoSwift Framework
+      run: rm -rf CryptoSwift.xcframework
+
+    - name: Remove old FDKClient Framework
+      run: rm -rf FDKClient.xcframework
+      
+    - name: Create CryptoSwift Framework
+      run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/CryptoSwift.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/CryptoSwift.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/CryptoSwift.xcframework
+      
+    - name: Create Alamofire Framework
+      run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/Alamofire.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/Alamofire.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/Alamofire.xcframework
+      
+    - name: Create FDKClient Framework
+      run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/FDKClient.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/FDKClient.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/FDKClient.xcframework
+      
+    - name: Git add FrameworkFile with lfs 
+      run: git lfs track "*.xcframework"
+
+    - name: Git add Gitattributes 
+      run: git add .gitattributes
+
+    - name: Git commit
+      run: git commit -m "Updated XcFrameworks files over Remote"
+
+    - name: Git HTTP 1.1 Setup
+      run: git config --global http.version HTTP/1.1 
+
+    - name: Git Push
+      run: git push "https://github.com/rushangfynd2/FyndXcframework.git" HEAD:main
