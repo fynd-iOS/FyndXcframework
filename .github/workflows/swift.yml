@@ -31,6 +31,9 @@ jobs:
     - name: Install the git-lfs for large file
       run: brew install git-lfs
 
+    - name: Gitlab Clone to Specific Path
+      run: mkdir gitlabProject && git clone https://gitlab.com/rushangprajapati/XcFrameworksSwift.git 
+
     - name: Pod Install to fetch latest code
       run: pod install
 
