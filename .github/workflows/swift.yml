@@ -32,15 +32,18 @@ jobs:
       run: brew install git-lfs
 
     - name: Gitlab Clone to Specific Path
-      run: mkdir gitlabProject && cd gitlabProject && git clone https://gitlab.com/rushangprajapati/XcFrameworksSwift.git 
+      run: git clone https://gitlab.com/rushangprajapati/XcFrameworksSwift.git 
 
-    - name: test path
-      run: pwd
+    - name: move path
+      run: cd XcFrameworksSwift
+
+    - name: List of files1
+      run: ls
 
     - name: Pod Install to fetch latest code
       run: pod install
 
-    - name: List of files1
+    - name: List of files2
       run: ls
 
     - name: Build iOS
@@ -49,7 +52,7 @@ jobs:
     - name: Build iOS Simulator
       run:  xcodebuild archive -workspace FyndXcframework.xcworkspace -scheme FyndXcframework -destination "generic/platform=iOS Simulator" -archivePath "/Users/$USER/fyndFDK-iOS-Simulator" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES
 
-    - name: List of files2
+    - name: List of files3
       run: ls
 
     - name: Pull The Repo
