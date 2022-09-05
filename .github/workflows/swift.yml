@@ -59,19 +59,19 @@ jobs:
 #       run: rm -rf FDKClient.xcframework
       
     - name: Create CryptoSwift Framework
-      run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/CryptoSwift.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/CryptoSwift.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/CryptoSwift.xcframework
+      run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/CryptoSwift.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/CryptoSwift.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/XcFrameworksSwift/CryptoSwift.xcframework
       
     - name: Create Alamofire Framework
-      run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/Alamofire.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/Alamofire.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/Alamofire.xcframework
+      run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/Alamofire.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/Alamofire.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/XcFrameworksSwift/Alamofire.xcframework
       
 #     - name: Create FDKClient Framework
-#       run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/FDKClient.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/FDKClient.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/FDKClient.xcframework
+#       run: xcodebuild -create-xcframework -framework /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/Products/Library/Frameworks/FDKClient.framework -debug-symbols /Users/$USER/fyndFDK-iOS-Simulator.xcarchive/dSYMs -framework /Users/$USER/fyndFDK-iOS.xcarchive/Products/Library/Frameworks/FDKClient.framework -debug-symbols /Users/$USER/fyndFDK-iOS.xcarchive/dSYMs -output /Users/$USER/work/FyndXcframework/FyndXcframework/XcFrameworksSwift/FDKClient.xcframework
       
-    - name: Git add FrameworkFile with lfs 
-      run: git lfs track "*.xcframework"
-
-    - name: Git add Gitattributes 
-      run: git add .gitattributes
+    - name: Move to GitLab Folder 
+      run: cd /Users/$USER/work/FyndXcframework/FyndXcframework/XcFrameworksSwift
+      
+    - name: Git add FrameworkFiles
+      run: git add .
 
     - name: Git commit
       run: git commit -m "Updated XcFrameworks files over Remote"
